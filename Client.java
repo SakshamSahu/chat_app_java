@@ -3,13 +3,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.font.*;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;;
+import javax.swing.SwingConstants;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;;
 
 public class Client extends JFrame {
 
@@ -36,6 +44,7 @@ public class Client extends JFrame {
             // out = new PrintWriter(socket.getOutputStream());
 
             createGUI();
+            handleEvents();
             // startReading();
             // startWriting();
 
@@ -47,11 +56,22 @@ public class Client extends JFrame {
 
     private void createGUI() {
         this.setTitle("Client Messenger [END]");
-        this.setSize(600, 600);
+        this.setSize(600, 700);
         this.setLocationRelativeTo(null); // ye center me kar dega apki window ko
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Jab cross button click kroge aapko program band ho
                                                              // jayega.
 
+        ImageIcon originalIcon = new ImageIcon("chatlogo.png"); // Your original image
+        Image img = originalIcon.getImage(); // Get the image from the icon
+        Image resizedImage = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH); // Resize image
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+        heading.setIcon(resizedIcon);
+        heading.setPreferredSize(new Dimension(100, 100));
+        heading.setHorizontalTextPosition(SwingConstants.CENTER);
+        heading.setVerticalTextPosition(SwingConstants.BOTTOM);
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+        heading.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         // coding for component
         // font set
         messageInput.setFont(font);
@@ -67,6 +87,35 @@ public class Client extends JFrame {
         this.add(messageInput, BorderLayout.SOUTH);
 
         this.setVisible(true);
+    }
+
+    private void handleEvents() {
+        messageInput.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+                // System.out.println("Key Released" +e.getKeyCode());
+                if (e.getKeyCode() == 10) {
+                    System.out.println("You Have Pressed Entered Button");
+                    String contentToSend = messageInput.getText();
+                    out.println(contentToSend);
+                }
+
+            }
+        });
     }
 
     // start reading method
