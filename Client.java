@@ -6,12 +6,13 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.font.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -36,16 +37,16 @@ public class Client extends JFrame {
     public Client() {
         try {
 
-            // System.out.println("Sending request to the Server");
-            // socket = new Socket("192.168.2.29", 7777);
-            // System.out.println("Connection Established");
+            System.out.println("Sending request to the Server");
+            socket = new Socket("192.168.2.29", 7778);
+            System.out.println("Connection Established");
 
-            // br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            // out = new PrintWriter(socket.getOutputStream());
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
 
             createGUI();
             handleEvents();
-            // startReading();
+            startReading();
             // startWriting();
 
         } catch (Exception e) {
@@ -72,6 +73,7 @@ public class Client extends JFrame {
         heading.setVerticalTextPosition(SwingConstants.BOTTOM);
         heading.setHorizontalAlignment(SwingConstants.CENTER);
         heading.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        messagearea.setEditable(false);
         // coding for component
         // font set
         messageInput.setFont(font);
@@ -83,7 +85,8 @@ public class Client extends JFrame {
 
         // adding the components to frame
         this.add(heading, BorderLayout.NORTH);
-        this.add(messagearea, BorderLayout.CENTER);
+        JScrollPane jScrollPane = new JScrollPane(messagearea);
+        this.add(jScrollPane, BorderLayout.CENTER);
         this.add(messageInput, BorderLayout.SOUTH);
 
         this.setVisible(true);
@@ -95,13 +98,12 @@ public class Client extends JFrame {
             @Override
             public void keyTyped(KeyEvent e) {
                 // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
                 // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'keyPressed'");
             }
 
             @Override
@@ -111,7 +113,11 @@ public class Client extends JFrame {
                 if (e.getKeyCode() == 10) {
                     System.out.println("You Have Pressed Entered Button");
                     String contentToSend = messageInput.getText();
+                    messagearea.append("Me : " + contentToSend + "\n");
                     out.println(contentToSend);
+                    out.flush();
+                    messageInput.setText("");
+                    messageInput.requestFocus();
                 }
 
             }
@@ -129,10 +135,13 @@ public class Client extends JFrame {
                     String msg = br.readLine();
                     if (msg.equals("quit")) {
                         System.out.println("Server Terminated The Chat");
+                        JOptionPane.showMessageDialog(this, "Server Terminated The Chat");
+                        messageInput.setEnabled(false);
                         socket.close();
                         break;
                     }
                     System.out.println("Server : " + msg);
+                    messagearea.append("Server : " + msg + "\n");
 
                 }
             } catch (Exception e) {
@@ -163,9 +172,8 @@ public class Client extends JFrame {
                         socket.close();
                         break;
                     }
-                    System.out.println("Connection is Closed.");
-
                 }
+                System.out.println("Connection is Closed.");
             } catch (Exception e) {
 
                 e.printStackTrace();

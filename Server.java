@@ -15,7 +15,7 @@ public class Server {
 
         try {
 
-            server = new ServerSocket(7777);
+            server = new ServerSocket(7778);
             System.out.println("Server is ready to accept connection");
             System.out.println("Waiting...");
             socket = server.accept();
@@ -53,6 +53,7 @@ public class Server {
             } catch (Exception e) {
                 // e.getStackTrace();
                 System.out.println("Connection is Closed.");
+                // System.out.println(e.getMessage());
             }
         };
         new Thread(r1).start();
@@ -75,8 +76,10 @@ public class Server {
                         socket.close();
                         break;
                     }
-                    System.out.println("Connection is Closed.");
+
                 }
+                // System.out.println("Writer error 00"); //for eroor checking
+                System.out.println("Connection is Closed.");
             } catch (Exception e) {
                 e.getStackTrace();
             }
