@@ -35,22 +35,31 @@ public class Client extends JFrame {
 
     // constructor
     public Client() {
-        try {
+        String serverIP = JOptionPane.showInputDialog(this, "Enter Server IP Address:", "Server IP",
+                JOptionPane.PLAIN_MESSAGE);
 
-            System.out.println("Sending request to the Server");
-            socket = new Socket("192.168.2.29", 7778);
-            System.out.println("Connection Established");
+        if (serverIP != null && !serverIP.isEmpty()) {
+            try {
 
-            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream());
+                System.out.println("Sending request to the Server");
+                socket = new Socket(serverIP, 7778);
+                System.out.println("Connection Established");
 
-            createGUI();
-            handleEvents();
-            startReading();
-            // startWriting();
+                br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                out = new PrintWriter(socket.getOutputStream());
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                createGUI();
+                handleEvents();
+                startReading();
+                // startWriting();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "IP Address is required to connect to the server.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(0); // Close the application if IP is not provided
         }
 
     }
